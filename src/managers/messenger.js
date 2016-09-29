@@ -1,25 +1,25 @@
-var Messenger = function Messenger(_options) {
+/**
+	
+*/
+function Messenger() {
 	"use strict";
 
-	var _api = {}, //this,
-		_private = {},
+	var _validateNamespace, _validateCallback, _formatNamespace,
+		_api = {},
 		_callbackGroups = [];
 
 
 
-	/************************* Initialize *************************/
+	/************************* Validate *************************/
 	// If: Messenger was called as a function and not as a constructor.
-	if (typeof this === "undefined" || this instanceof Window) {
+	if (typeof this === "undefined" || typeof this.constructor === "undefined" || this.constructor.name !== "Messenger") {
 		throw new SyntaxError(`Messenger is not a function, use it as a constructor. Usage: var messenger = new Messenger(options)`);
 	}
-
-	// Set default options
-	_options = _options || {};
 
 
 
 	/************************* Private Helpers *************************/
-	_private.validateNamespace = function (namespace) {
+	_validateNamespace = function (namespace) {
 		if (typeof namespace !== "string") {
 			throw new SyntaxError(`The namespace is not a string (current type: '${typeof namespace}').`);
 		}
@@ -29,14 +29,14 @@ var Messenger = function Messenger(_options) {
 	};
 
 
-	_private.validateCallback = function (callback) {
+	_validateCallback = function (callback) {
 		if (typeof callback !== "function") {
 			throw new SyntaxError(`The callback is not a function (current type: '${typeof namespace}').`);
 		}
 	};
 
 
-	_private.formatNamespace = function (namespace) {
+	_formatNamespace = function (namespace) {
 		return namespace.toLowerCase();
 	};
 
@@ -45,11 +45,11 @@ var Messenger = function Messenger(_options) {
 	/************************* Public API *************************/
 	_api.listen = function (namespace, callback) {
 		// Throw an exception if the namespace or callback are not valid
-		_private.validateNamespace(namespace);
-		_private.validateCallback(callback);
+		_validateNamespace(namespace);
+		_validateCallback(callback);
 
 		// Format the namespace
-		namespace = _private.formatNamespace(namespace);
+		namespace = _formatNamespace(namespace);
 
 		// Push the callback onto it's namespaced group
 		_callbackGroups[namespace] = _callbackGroups[namespace] || [];
@@ -57,15 +57,15 @@ var Messenger = function Messenger(_options) {
 	};
 
 
-	_api.disconnect = function (namespace) {
+	_api.disconnect = function (namespace, callback) {
 		var callbackList;
 
 		// Throw an exception if the namespace or callback are not valid
-		_private.validateNamespace(namespace);
-		_private.validateCallback(callback);
+		_validateNamespace(namespace);
+		_validateCallback(callback);
 
 		// Format the namespace
-		namespace = _private.formatNamespace(namespace);
+		namespace = _formatNamespace(namespace);
 
 		// Get the list of callbacks for the given namespace
 		callbackList = _callbackGroups[namespace];
@@ -86,10 +86,10 @@ var Messenger = function Messenger(_options) {
 			promises = [];
 
 		// Throw an exception if the namespace is not valid
-		_private.validateNamespace(namespace);
+		_validateNamespace(namespace);
 
 		// Format the namespace
-		namespace = _private.formatNamespace(namespace);
+		namespace = _formatNamespace(namespace);
 
 		// Remove the namespace from the arguments list
 		args = Array.from(arguments)
@@ -103,8 +103,7 @@ var Messenger = function Messenger(_options) {
 		resolvePromise = function (results) {
 			return Promise.resolve({
 				args: args,
-				callbacks: callbackList,
-				options: _options
+				callbacks: callbackList
 			});
 		};
 
@@ -113,7 +112,7 @@ var Messenger = function Messenger(_options) {
 			callbackList.forEach(callback => {
 				if (typeof callback === "function") {
 					promises.push(
-						callback.apply(callback, args)
+						callback.apply(null, args)
 					);
 				}
 			});
