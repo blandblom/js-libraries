@@ -1,2 +1,7 @@
 # js-libraries
-Small libraries to support browser-based JavaScript applications.
+Micro JavaScript libraries to support browser-based applications.
+
+## Why Micro-Libraries
+
+
+# This is a work in progress...
