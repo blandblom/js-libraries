@@ -1,8 +1,10 @@
-
-var Enum = function Enum(_enumConstants) {
+/**
+	
+*/
+function Enum(_enumInstances) {
 	"use strict";
 
-	var EnumConstant, _init, _isKeyReserved, _isEnumConstant, _constantKey,
+	var EnumInstance, _init, _isKeyReserved, _isEnumInstance, _constantKey,
 		_api = {},
 		_reservedKeys = [
 			"constructor",
@@ -28,28 +30,28 @@ var Enum = function Enum(_enumConstants) {
 
 	// If: The enum constant list is not defined.
 	// Then: Throw an exception and prevent the API from being returned.
-	if (typeof _enumConstants === "undefined") {
+	if (typeof _enumInstances === "undefined") {
 		throw new SyntaxError(`The enum constant list is not defined.  Pass an object to the constructor.`);
 	}
 
 
 	// If: The enum constant list is not an object.
 	// Then: Throw an exception and prevent the API from being returned.
-	if (typeof _enumConstants !== "object") {
+	if (typeof _enumInstances !== "object") {
 		throw new SyntaxError(`The enum constant list must be an object.`);
 	}
 
 
 
 	/************************* Internal Objects *************************/
-	EnumConstant = function EnumConstant(enumConstantKey, enumConstantValues) {
+	EnumInstance = function EnumInstance(enumInstanceKey, enumInstanceValues) {
 		"use strict";
 
 		var isValueInList = function(value) {
 			var key, isValueInList = false;
 
-			for (key in enumConstantValues) {
-				if (value === enumConstantValues[key]) {
+			for (key in enumInstanceValues) {
+				if (value === enumInstanceValues[key]) {
 					isValueInList = true;
 					break;
 				}
@@ -59,9 +61,9 @@ var Enum = function Enum(_enumConstants) {
 		};
 
 		return Object.freeze({
-			get isEnumConstant() { return true; },
+			get isEnumInstance() { return true; },
 			toString: function() {
-				return enumConstantKey;
+				return enumInstanceKey;
 			},
 			equals: function(compareValue) {
 				return (
@@ -77,19 +79,19 @@ var Enum = function Enum(_enumConstants) {
 	_init = function() {
 		var key;
 
-		for (key in _enumConstants) {
+		for (key in _enumInstances) {
 			// If: The key is a reserved keyword, throw exception.
 			// Else If: The one of the enum constant is not an array or does not
 			//			have at least 1 value, throw exception.
 			if (_isKeyReserved(key)) {
 				throw new SyntaxError(`The key '${key}' is a reserved keyword.`);
 			}
-			else if (!Array.isArray(_enumConstants[key]) || _enumConstants[key].length === 0) {
+			else if (!Array.isArray(_enumInstances[key]) || _enumInstances[key].length === 0) {
 				throw new SyntaxError(`The enum constant must be an array of values with a minimum of 1 value. Constant: ${key}`);
 			}
 			
 			// Create a new enum constant object.
-			_api[key] = new EnumConstant(key, _enumConstants[key]);
+			_api[key] = new EnumInstance(key, _enumInstances[key]);
 		}
 	};
 
@@ -108,10 +110,10 @@ var Enum = function Enum(_enumConstants) {
 	};
 
 
-	_isEnumConstant = function(value) {
+	_isEnumInstance = function(value) {
 		return (
 			typeof value === "object"
-			&& value.isEnumConstant
+			&& value.isEnumInstance
 		);
 	};
 
@@ -119,16 +121,16 @@ var Enum = function Enum(_enumConstants) {
 
 	/************************* Public API *************************/
 	_api.getByValue = function(value) {
-		var enumConstant, key;
+		var enumInstance, key;
 
 		for (key in _api) {
 			if (!_isKeyReserved(key) && _api[key].equals(value)) {
-				enumConstant = _api[key];
+				enumInstance = _api[key];
 				break;
 			}
 		}
 
-		return enumConstant;
+		return enumInstance;
 	};
 
 
@@ -137,21 +139,21 @@ var Enum = function Enum(_enumConstants) {
 			isTheSame = false;
 
 		// Throw an error if there are not two values.
-		if (typeof value1 === "undefined" || typeof value2 === "undefined" || ) {
+		if (typeof value1 === "undefined" || typeof value2 === "undefined") {
 			throw SyntaxError(`The compare function takes in two values. (value1: ${value1}, value2: ${value2})`);
 		}
 
 		// Convert the values to their respective enum constant
-		enum1 = (_isEnumConstant(value1))
+		enum1 = (_isEnumInstance(value1))
 			? value1
 			: _api.getByValue(value1);
 
-		enum2 = (_isEnumConstant(value2))
+		enum2 = (_isEnumInstance(value2))
 			? value2
 			: _api.getByValue(value2);
 
 		// Compare the two enum constants
-		if (_isEnumConstant(enum1) && _isEnumConstant(enum2)) {
+		if (_isEnumInstance(enum1) && _isEnumInstance(enum2)) {
 			isTheSame = enum1.equals(enum2);
 		}
 
@@ -168,43 +170,3 @@ var Enum = function Enum(_enumConstants) {
 	/************************* Return API *************************/
 	return Object.freeze(_api);
 };
-
-
-var myEnum = new Enum({
-	constantZero: [0, "zero"],
-	constantOne: [1, "one"],
-	constantTwo: [2, "two"]
-});
-
-var enumInstance = myEnum.constantZero;
-
-console.log("=== Enum Object Will Not Change ===")
-console.log("myEnum (before):", myEnum)
-myEnum.constantZero = 99;
-myEnum.newProperty = 10;
-console.log("myEnum.constantZero = 99;")
-console.log("myEnum.newProperty = 10;")
-console.log("myEnum (after):", myEnum)
-
-console.log("=== All True ===");
-console.log("(myEnum.constantZero === enumInstance):", myEnum.constantZero === enumInstance);
-console.log("(myEnum.constantZero.equals(0)):", myEnum.constantZero.equals(0));
-console.log("(myEnum.constantZero.equals('zero'))):", myEnum.constantZero.equals("zero"));
-console.log("(myEnum.constantZero.equals(enumInstance)):", myEnum.constantZero.equals(enumInstance));
-console.log("(myEnum.compare(0, 'zero')):", myEnum.compare(0, "zero"));
-console.log("(myEnum.compare(0, enumInstance)):", myEnum.compare(0, enumInstance));
-console.log("(myEnum.compare(0, 'zero')):", myEnum.compare(0, "zero"));
-
-console.log("=== All False ===");
-console.log("(myEnum.constantOne === enumInstance):", myEnum.constantOne === enumInstance);
-console.log("(myEnum.constantZero.equals()):", myEnum.constantZero.equals());
-console.log("(myEnum.constantZero.equals('0')):", myEnum.constantZero.equals("0"));
-console.log("(myEnum.constantZero.equals('one')):", myEnum.constantZero.equals("one"));
-console.log("(myEnum.constantZero.equals(myEnum.constantOne)):", myEnum.constantZero.equals(myEnum.constantOne));
-console.log("(myEnum.compare(0, 'one')):", myEnum.compare(0, "one"));
-console.log("(myEnum.compare(0, myEnum.constantOne)):", myEnum.compare(0, myEnum.constantOne));
-
-console.log("=== Throws Exception ===");
-console.log("(myEnum.constantZero.equals()):", myEnum.compare("zero", "notvalid"));
-console.log(Enum());
-
