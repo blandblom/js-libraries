@@ -2,9 +2,9 @@
 A repository of micro-libraries to support JavaScript applications.
 
 * Enum
-..* A basic enum type with the ability to associate multiple values to a single enum instance.
+  * A basic enum type with the ability to associate multiple values to a single enum instance.
 * Messenger
-..* A simple messenger that returns a promise upon completion of all listening functions.
+  * A simple messenger that returns a promise upon completion of all listening functions.
 
 ## Why Micro-Libraries
 A JavaScript library should do one thing, and do it well.
