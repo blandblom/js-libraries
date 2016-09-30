@@ -1,5 +1,5 @@
 # Types
-Simple types to extend the base types in JavaScript.
+Simple sudo-types to extend the base types in JavaScript.
 
 
 ## Enum
