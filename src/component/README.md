@@ -5,6 +5,10 @@ The only magic is the one-way DOM bindings.
 Native DOM event bindings.  No magic, which makes it a whole lot easier to debug.
 
 
+#### Design: 
+![Component Diagram](component-diagram.png "Component Diagram")
+
+
 #### TODO:
 * Figure out scoping.  Should I use '_createChildComponent'.  That would make it easy but would lead to easy mistakes by developers.  I want something more explicit so that we can scape the messenger to a group of components...
 * Figure out initialization...
