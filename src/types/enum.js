@@ -4,7 +4,7 @@
 function Enum(_enumInstances) {
 	"use strict";
 
-	var EnumInstance, _init, _isKeyReserved, _isEnumInstance, _constantKey,
+	var _EnumInstance, _init, _isKeyReserved, _isEnumInstance, _constantKey,
 		_api = {},
 		_reservedKeys = [
 			"constructor",
@@ -44,7 +44,7 @@ function Enum(_enumInstances) {
 
 
 	/************************* Internal Objects *************************/
-	EnumInstance = function EnumInstance(enumInstanceKey, enumInstanceValues) {
+	_EnumInstance = function EnumInstance(enumInstanceKey, enumInstanceValues) {
 		"use strict";
 
 		var isValueInList = function(value) {
@@ -91,7 +91,7 @@ function Enum(_enumInstances) {
 			}
 			
 			// Create a new enum constant object.
-			_api[key] = new EnumInstance(key, _enumInstances[key]);
+			_api[key] = new _EnumInstance(key, _enumInstances[key]);
 		}
 	};
 
