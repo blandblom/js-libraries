@@ -4,6 +4,8 @@ The only magic is the one-way DOM bindings.
 
 Native DOM event bindings.  No magic, which makes it a whole lot easier to debug.
 
+Promise based component system.  Allows for components to asynchronously fetch data and resolve once the component is ready for consumption.  In most cases, components should wait on their child components to resolve before resolving themselves.
+
 
 #### Design: 
 ![Component Diagram](component-diagram.png "Component Diagram")
@@ -16,19 +18,50 @@ Native DOM event bindings.  No magic, which makes it a whole lot easier to debug
 
 #### Usage:
 ```
-var component = new Component({
-	container: HTMLElement,
-	model: "root-model-name",
-	template: "root-template-name"
-});
+//var component = new Component({
+//	container: HTMLElement,
+//	model: "root-model-name",
+//	template: "root-template-name"
+//});
+
+
+//var module = new Module();
+
+
+//module
+//	.init({
+//		container: HTMLElement,
+//		model: "root-model-name",
+//		template: "root-template-name"
+//	})
+//	.then(rootComponent => {});
+
+
+var component = new Component();
 
 
 component
-	.create({
-		name: "model-name",
-		inputs: {} // optional
+	.module({
+		container: HTMLElement,
+		model: "root-model-name",
+		template: "root-template-name"
 	})
-	.then(myComponent => {});
+	.then(rootComponent => {});
+
+
+//component
+//	.create({
+//		name: "model-name",
+//		inputs: {} // optional
+//	})
+//	.then(myComponent => {});
+
+
+_createChildComponent({
+	name: "model-name",
+	inputs: {} // optional
+})
+.then(childComponent => {});
 
 
 component.model("model-name", function (

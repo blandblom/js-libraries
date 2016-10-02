@@ -4,7 +4,8 @@
 function Component(_root) {
 	"use strict";
 
-	var _CreateFactory,
+	var _CreateModule,
+		//_CreateFactory,
 		_DefineModel,
 		_DefineAction,
 		_DefineTemplate,
@@ -23,29 +24,29 @@ function Component(_root) {
 	}
 
 
-	// If: The component root is not defined.
-	// Then: Throw an exception and prevent the API from being returned.
-	if (typeof _root === "undefined") {
-		throw new SyntaxError(`The component root are not defined (usage: new Component({ container: HTMLElement, model: "root-component-name", template: "root-template-name" })).`);
-	}
+	// // If: The component root is not defined.
+	// // Then: Throw an exception and prevent the API from being returned.
+	// if (typeof _root === "undefined") {
+	// 	throw new SyntaxError(`The component root are not defined (usage: new Component({ container: HTMLElement, model: "root-component-name", template: "root-template-name" })).`);
+	// }
 
 
-	// If: The component root is not an object.
-	// Then: Throw an exception and prevent the API from being returned.
-	if (typeof _root !== "object" || Object.keys(_root).length === 0) {
-		throw new SyntaxError(`The component root must be an object (usage: new Component({ container: HTMLElement, model: "root-component-name", template: "root-template-name" })).`);
-	}
+	// // If: The component root is not an object.
+	// // Then: Throw an exception and prevent the API from being returned.
+	// if (typeof _root !== "object" || Object.keys(_root).length === 0) {
+	// 	throw new SyntaxError(`The component root must be an object (usage: new Component({ container: HTMLElement, model: "root-component-name", template: "root-template-name" })).`);
+	// }
 
 
-	// If: The required component root properties do not exist.
-	// Then: Throw an exception and prevent the API from being returned.
-	if (!(_root.container instanceof HTMLElement)
-		|| typeof _root.model !== "string"
-		|| typeof _root.template !== "string"
-		|| _root.model.trim() === ""
-		|| _root.template.trim() === "") {
-		throw new SyntaxError(`The component root must be an object (usage: new Component({ container: HTMLElement, model: "root-component-name", template: "root-template-name" })).`);
-	}
+	// // If: The required component root properties do not exist.
+	// // Then: Throw an exception and prevent the API from being returned.
+	// if (!(_root.container instanceof HTMLElement)
+	// 	|| typeof _root.model !== "string"
+	// 	|| typeof _root.template !== "string"
+	// 	|| _root.model.trim() === ""
+	// 	|| _root.template.trim() === "") {
+	// 	throw new SyntaxError(`The component root must be an object (usage: new Component({ container: HTMLElement, model: "root-component-name", template: "root-template-name" })).`);
+	// }
 
 
 
@@ -53,10 +54,30 @@ function Component(_root) {
 	/*
 
 	*/
-	_CreateFactory = function CreateFactory(createOptions) {
+	_CreateModule = function CreateModule(createOptions) {
 		"use strict";
 
-		var componentAPI = {};
+		var container, modelName, modelTemplate;
+
+
+		// Validate
+		if (typeof createOptions === "undefined") {
+			throw new SyntaxError(`The module options are not defined (usage: component.module({ container: HTMLElement, model: "root-component-name", template: "root-template-name" })).`);
+		}
+		else if (typeof createOptions !== "object" || Object.keys(createOptions).length === 0) {
+			throw new SyntaxError(`The module options must be an object (usage: omponent.module({ container: HTMLElement, model: "root-component-name", template: "root-template-name" })).`);
+		}
+		else if (!(createOptions.container instanceof HTMLElement)
+			|| typeof createOptions.model !== "string"
+			|| typeof createOptions.template !== "string"
+			|| createOptions.model.trim() === ""
+			|| createOptions.template.trim() === "") {
+			throw new SyntaxError(`The module options must have a HTMLElement container, model name, and template name (usage: omponent.module({ container: HTMLElement, model: "root-component-name", template: "root-template-name" })).`);
+		}
+
+		container = createOptions.container;
+		modelName = createOptions.model;
+		modelTemplate = createOptions.template;
 
 
 		model = new _models[modelName](
@@ -71,6 +92,29 @@ function Component(_root) {
 
 		return Promise.resolve(() => new Component({}));
 	};
+
+
+	// /*
+
+	// */
+	// _CreateFactory = function CreateFactory(createOptions) {
+	// 	"use strict";
+
+	// 	var componentAPI = {};
+
+
+	// 	model = new _models[modelName](
+	// 		root.model,
+	// 		root.api,
+	// 		root.protected,
+	// 		root.messenger,
+	// 		root.createChildComponent,
+	// 		root.inputs
+	// 	);
+
+
+	// 	return Promise.resolve(() => new Component({}));
+	// };
 
 
 
@@ -157,7 +201,8 @@ function Component(_root) {
 
 
 	/************************* Public API *************************/
-	_api.create = _CreateFactory;
+	_api.module = _CreateModule;
+	//_api.create = _CreateFactory;
 	_api.model = _DefineModel;
 	_api.action = _DefineAction;
 	_api.template = _DefineTemplate;

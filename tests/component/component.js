@@ -8,53 +8,55 @@ describe("Component", function() {
 	beforeEach(function() {
 		container = document.createElement("div");
 
-		component = new Component({
-			container: container,
-			model: "root-model-name",
-			template: "root-temaplte-name"
-		});
+		component = new Component();
+
+		// component = new Component({
+		// 	container: container,
+		// 	model: "root-model-name",
+		// 	template: "root-temaplte-name"
+		// });
 	});
 
 
 
 	/*************** Exception Tests ***************/
-	it("Throw Exception: Component() (no options passed to constructor)", function() {
-		expect(() => new Component())
-			.to.throwError();
+	// it("Throw Exception: Component() (no options passed to constructor)", function() {
+	// 	expect(() => new Component())
+	// 		.to.throwError();
 
-		expect(() => new Component({}))
-			.to.throwError();
+	// 	expect(() => new Component({}))
+	// 		.to.throwError();
 
-		expect(() => new Component([]))
-			.to.throwError();
+	// 	expect(() => new Component([]))
+	// 		.to.throwError();
 
-		expect(() => new Component(99))
-			.to.throwError();
+	// 	expect(() => new Component(99))
+	// 		.to.throwError();
 
-		expect(() => new Component("string"))
-			.to.throwError();
+	// 	expect(() => new Component("string"))
+	// 		.to.throwError();
 
-		expect(() => new Component(function() {}))
-			.to.throwError();
+	// 	expect(() => new Component(function() {}))
+	// 		.to.throwError();
 
-		expect(() => new Component({
-			container: "",
-			model: "root-model-name",
-			template: "root-temaplte-name"
-		})).to.throwError();
+	// 	expect(() => new Component({
+	// 		container: "",
+	// 		model: "root-model-name",
+	// 		template: "root-temaplte-name"
+	// 	})).to.throwError();
 
-		expect(() => new Component({
-			container: container,
-			model: "   ",
-			template: "root-temaplte-name"
-		})).to.throwError();
+	// 	expect(() => new Component({
+	// 		container: container,
+	// 		model: "   ",
+	// 		template: "root-temaplte-name"
+	// 	})).to.throwError();
 
-		expect(() => new Component({
-			container: container,
-			model: "root-model-name",
-			template: "    "
-		})).to.throwError();
-	});
+	// 	expect(() => new Component({
+	// 		container: container,
+	// 		model: "root-model-name",
+	// 		template: "    "
+	// 	})).to.throwError();
+	// });
 		
 
 	it("Throw Exception: Component() (used as a function)", function() {
@@ -72,6 +74,45 @@ describe("Component", function() {
 
 		expect(() => Component.bind()())
 			.to.throwError();
+	});
+
+
+	it("Throw Exception: component.module() (no options passed to factory)", function() {
+		expect(() => component.module())
+			.to.throwError();
+
+		expect(() => component.module({}))
+			.to.throwError();
+
+		expect(() => component.module([]))
+			.to.throwError();
+
+		expect(() => component.module(99))
+			.to.throwError();
+
+		expect(() => Component("string"))
+			.to.throwError();
+
+		expect(() => component.module(function() {}))
+			.to.throwError();
+
+		expect(() => component.module({
+			container: "",
+			model: "root-model-name",
+			template: "root-temaplte-name"
+		})).to.throwError();
+
+		expect(() => component.module({
+			container: container,
+			model: "   ",
+			template: "root-temaplte-name"
+		})).to.throwError();
+
+		expect(() => component.module({
+			container: container,
+			model: "root-model-name",
+			template: "    "
+		})).to.throwError();
 	});
 
 });
