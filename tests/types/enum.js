@@ -32,19 +32,19 @@ describe("Enum", function() {
 
 
 	it("Throw Exception: Enum() (used as a function)", function() {
-		expect(Enum)
+		expect(() => Enum())
 			.to.throwError();
 	});
 
 
 	it("Throw Exception: Enum.apply(), Enum.call(), Enum.bind()", function() {
-		expect(Enum.apply)
+		expect(() => Enum.apply())
 			.to.throwError();
 
-		expect(Enum.call)
+		expect(() => Enum.call())
 			.to.throwError();
 
-		expect(Enum.bind)
+		expect(() => Enum.bind()()())
 			.to.throwError();
 	});
 

@@ -33,13 +33,13 @@ describe("Messenger", function() {
 
 
 	it("Throw Exception: Messenger.apply(), Messenger.call(), Messenger.bind()", function() {
-		expect(Enum.apply)
+		expect(() => Enum.apply())
 			.to.throwError();
 
-		expect(Enum.call)
+		expect(() => Enum.call())
 			.to.throwError();
 
-		expect(Enum.bind)
+		expect(() => Enum.bind()())
 			.to.throwError();
 	});
 

@@ -42,13 +42,13 @@ describe("Flags", function() {
 
 
 	it("Throw Exception: Flags.apply(), Flags.call(), Flags.bind()", function() {
-		expect(Flags.apply)
+		expect(() => Flags.apply())
 			.to.throwError();
 
-		expect(Flags.call)
+		expect(() => Flags.call())
 			.to.throwError();
 
-		expect(Flags.bind)
+		expect(() => Flags.bind()())
 			.to.throwError();
 	});
 });
