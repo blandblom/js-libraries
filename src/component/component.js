@@ -57,7 +57,7 @@ function Component(_root) {
 	_CreateModule = function CreateModule(createOptions) {
 		"use strict";
 
-		var container, modelName, modelTemplate;
+		var container, util, modelName, modelTemplate, modelInputs;
 
 
 		// Validate
@@ -76,16 +76,21 @@ function Component(_root) {
 		}
 
 		container = createOptions.container;
+		util = createOptions.util;
+
 		modelName = createOptions.model;
 		modelTemplate = createOptions.template;
-
+		modelInputs = createOptions.inputs.
 
 		model = new _models[modelName](
 			root.model,
 			root.api,
 			root.protected,
 			root.messenger,
-			root.createChildComponent,
+			root.module: {
+				createChildComponent,
+				util
+			},
 			root.inputs
 		);
 

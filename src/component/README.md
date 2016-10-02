@@ -44,7 +44,9 @@ component
 	.module({
 		container: HTMLElement,
 		model: "root-model-name",
-		template: "root-template-name"
+		template: "root-template-name",
+		util: ["module-util-name", ...], // optional
+		inputs: {} // optional
 	})
 	.then(rootComponent => {});
 
@@ -57,20 +59,22 @@ component
 //	.then(myComponent => {});
 
 
-_createChildComponent({
-	name: "model-name",
-	inputs: {} // optional
-})
-.then(childComponent => {});
+_module
+	.createChildComponent({
+		model: "model-name",
+		inputs: {} // optional
+	})
+	.then(childComponent => {});
 
 
 component.model("model-name", function (
-	_model, _api, _protected, _messenger,
-	_createChildComponent, _inputs
+	_model, _api, _protected, _messenger, _module, _inputs
 ) {
 	"use strict";
 
 	_model...
+	_module.createChildComponent();
+	_module.util;
 });
 
 
@@ -88,5 +92,12 @@ component.template(
 	"template string OR template path",
 	["action-name", ...] // optional
 );
+
+
+component.util("util-name", function (
+	_rootComponent
+) {
+	
+});
 
 ```
