@@ -9,6 +9,9 @@ function Component(_root) {
 		_DefineModel,
 		_DefineAction,
 		_DefineTemplate,
+		_DefineUtil,
+		_Module,
+		_Component,
 		_api = {},
 		_models = {},
 		_actions = {},
@@ -198,6 +201,71 @@ function Component(_root) {
 	};
 
 
+	/*
+
+	*/
+	_DefineUtil = function Defineutil(utilName, UtilObject) {
+		"use strict";
+
+		if (typeof utilName !== "string" || utilName.trim() === "") {
+			throw new SyntaxError(`The util name must be a valid string (usage: component.util(string, function).`);
+		}
+
+		if (typeof UtilObject !== "function") {
+			throw new SyntaxError(`The util object must be a valid function (usage: component.util(string, function).`);
+		}
+
+		// No check to see if util name currently exists.  If two
+		// utils have the same name, then the last one in will be
+		// the current.  This is how variables work, so leaving that
+		// same power to the developer to get right.
+		_actions[utilName] = UtilObject;
+	};
+
+
+	/*
+
+	*/
+	_Module = function Module() {
+		"use strict";
+
+		var moduleAPI;
+
+		moduleAPI.destroy = function () {
+			// Forces all components to destroy themselves
+		};
+
+		//moduleAPI.util = {};
+		moduleAPI.component = rootComponent.api;  // Should not expose destroy, remove view, etc
+
+		innerModule = {
+			util,
+			createChildComponent,
+			createChildComponentList
+		}
+	};
+
+
+	/*
+
+	*/
+	_Component = function Component() {
+		"use strict";
+
+		var componentAPI;
+
+		componentAPI.destroy = function (forceDestroy) {
+			return true || false;
+		};
+
+		componentAPI.removeView = function () {
+			return true || false;
+		};
+
+		componentAPI.api = {};
+	};
+
+
 
 	/************************* Helper Methods *************************/
 	// _helper = function () {
@@ -211,6 +279,7 @@ function Component(_root) {
 	_api.model = _DefineModel;
 	_api.action = _DefineAction;
 	_api.template = _DefineTemplate;
+	_api.util =_DefineUtil;
 
 
 

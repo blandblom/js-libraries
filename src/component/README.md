@@ -48,7 +48,7 @@ component
 		util: ["module-util-name", ...], // optional
 		inputs: {} // optional
 	})
-	.then(rootComponent => {});
+	.then(module => {});
 
 
 //component
