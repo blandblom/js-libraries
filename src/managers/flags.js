@@ -5,7 +5,7 @@ function Flags(_flags) {
 	"use strict";
 
 	var _getFlagValuesFromHash,
-		_api = {};
+		_api = this;
 
 
 

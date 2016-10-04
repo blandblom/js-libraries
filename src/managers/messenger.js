@@ -5,7 +5,7 @@ function Messenger() {
 	"use strict";
 
 	var _validateNamespace, _validateCallback, _formatNamespace,
-		_api = {},
+		_api = this,
 		_callbackGroups = [];
 
 

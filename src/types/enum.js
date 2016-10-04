@@ -5,7 +5,7 @@ function Enum(_enumInstances) {
 	"use strict";
 
 	var _EnumInstance, _init, _isKeyReserved, _isEnumInstance, _constantKey,
-		_api = {},
+		_api = this,
 		_reservedKeys = [
 			"constructor",
 			"hasOwnProperty",
