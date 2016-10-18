@@ -6,6 +6,7 @@ function Flags(_flags) {
 
 	var _init, _isValidFlag,
 		_convertToBoolean,
+		_setFlagGetterAndSetter,
 		_getFlagValuesFromHash,
 		_internalFlags = {},
 		_api = this;
@@ -39,25 +40,30 @@ function Flags(_flags) {
 
 	/************************* Helper Methods *************************/
 	_init = function () {
-		var key, value, hashFlags;
+		var key, flagsFromHash;
 
-		hashFlags = _getFlagValuesFromHash();
+		flagsFromHash = _getFlagValuesFromHash();
 
 		for (key in _flags) {
-			value = (typeof hashFlags[key] === "boolean")
-				? hashFlags[key]
-				: _flags[key];
+			_setFlagGetterAndSetter(key, flagsFromHash);
+		}
+	};
 
-			if (_isValidFlag(key, value)) {
-				Object.defineProperty(_api, key, {
-					get: () => {
-						return _internalFlags[key];
-					},
-					set: val => _internalFlags[key] = _convertToBoolean(val)
-				});
 
-				_internalFlags[key] = _convertToBoolean(value);
-			}
+	_setFlagGetterAndSetter = function (key, flags) {
+		var value = (typeof flags[key] === "boolean")
+			? flags[key]
+			: _flags[key];
+
+		if (_isValidFlag(key, value)) {
+			Object.defineProperty(_api, key, {
+				get: () => {
+					return _internalFlags[key];
+				},
+				set: val => _internalFlags[key] = _convertToBoolean(val)
+			});
+
+			_internalFlags[key] = _convertToBoolean(value);
 		}
 	};
 
