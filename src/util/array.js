@@ -51,7 +51,7 @@ function UtilArray() {
 	};
 
 
-	_api.keyValuePairFromObject = function (obj) {
+	_api.keyValuePairsFromObject = function (obj) {
 		if (typeof obj !== "object") {
 			throw new SyntaxError(`Unable to create a key/value pair array for the object (typeof: ${typeof obj}).`);
 		}
