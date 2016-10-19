@@ -14,6 +14,7 @@ Promise based component system.  Allows for components to asynchronously fetch d
 #### TODO:
 * Figure out scoping.  Should I use '_createChildComponent'.  That would make it easy but would lead to easy mistakes by developers.  I want something more explicit so that we can scape the messenger to a group of components...
 * Figure out initialization...
+* Use Object.seal() on the model after it is instantiated.
 
 
 #### Usage:
