@@ -47,10 +47,15 @@ function() {
 
 
 myapp.define("my-component",
-["my-component", "/components/my-component.js", "/components/combined.js#my-component"],
+[
+	"my-component",
+	"/components/my-component.js",
+	"/components/combined.js#my-component"
+],
 function(
-	config, util, enums, dom,
-	messenger, logger, component,
+	config, util, flags, enums, dom,
+	messenger, logger, router,
+	svc, helpers, component,
 	MyComponent
 ) {
 	"use strict";
@@ -58,19 +63,36 @@ function(
 	var _static = {};
 	
 
-	return component.model(function(_api, _model, _module) {
-	// return component.model(function(_public, _protected, _module) {
+	return component.model("model-name", [
+		"propertyOne",
+		"propertyTwo"
+	], function(_api, _model, _module, _messenger, _promises) {
 		"use strict";
 
+		_model.propertyOne = 123345;
+
 	});
-}).then(
-function() {
-
-});
+})
+.then(modelAPI => onComponentReady());
 
 
+//var myComponenty = new component.Component("model-name", {});
+var myComponenty = component.Create("model-name", {});
+
+
+/**
+	The bootloader for the single-page-application.  No other 
+	objects are within the global 'window' namespace.
+*/
 var myapp = new function() {
+	"use strict";
 
+	var _api = this,
+		dependencyManager;
+
+
+
+	/************************* Dependency Manager *************************/
 	dependencyManager = new function() {
 		var dependencyList = [];
 
@@ -93,6 +115,7 @@ var myapp = new function() {
 			}
 		};
 	};
+
 
 	_api.define = function(dependencies, fn) {
 		return dependencyManager
@@ -117,4 +140,18 @@ var myapp = new function() {
 		return dependencyManager
 			.load(dependencies);
 	};
+
+
+
+	/************************* Load Dependencies *************************/
+	onReady(function() {
+
+	});
+
+
+
+
+
+	/************************* Return Public API (global to browser) *************************/
+	return _api;
 };

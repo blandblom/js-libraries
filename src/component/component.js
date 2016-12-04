@@ -68,14 +68,14 @@ function Component(_root) {
 			throw new SyntaxError(`The module options are not defined (usage: component.module({ container: HTMLElement, model: "root-component-name", template: "root-template-name" })).`);
 		}
 		else if (typeof createOptions !== "object" || Object.keys(createOptions).length === 0) {
-			throw new SyntaxError(`The module options must be an object (usage: omponent.module({ container: HTMLElement, model: "root-component-name", template: "root-template-name" })).`);
+			throw new SyntaxError(`The module options must be an object (usage: component.module({ container: HTMLElement, model: "root-component-name", template: "root-template-name" })).`);
 		}
 		else if (!(createOptions.container instanceof HTMLElement)
 			|| typeof createOptions.model !== "string"
 			|| typeof createOptions.template !== "string"
 			|| createOptions.model.trim() === ""
 			|| createOptions.template.trim() === "") {
-			throw new SyntaxError(`The module options must have a HTMLElement container, model name, and template name (usage: omponent.module({ container: HTMLElement, model: "root-component-name", template: "root-template-name" })).`);
+			throw new SyntaxError(`The module options must have a HTMLElement container, model name, and template name (usage: component.module({ container: HTMLElement, model: "root-component-name", template: "root-template-name" })).`);
 		}
 
 		container = createOptions.container;
@@ -204,7 +204,7 @@ function Component(_root) {
 	/*
 
 	*/
-	_DefineUtil = function Defineutil(utilName, UtilObject) {
+	_DefineUtil = function DefineUtil(utilName, utilObject) {
 		"use strict";
 
 		if (typeof utilName !== "string" || utilName.trim() === "") {
@@ -249,10 +249,72 @@ function Component(_root) {
 	/*
 
 	*/
-	_Component = function Component() {
+	_Component = function Component(modelName, inputs) {
 		"use strict";
 
-		var componentAPI;
+		var componentAPI,
+			model;
+
+
+		// _modelInstance = {};
+
+		// _modelInstance.api = {};
+
+
+		// Object.defineProperty(_modelInstance, "model", {
+		// 	get: function() {
+  //               return _modelInstance["model"];
+  //           },
+  //           set: function(modelProperty) {
+  //               var oldValue = _models[modelName];
+  //               _models[modelName] = modelProperty;
+  //           }
+		// });
+
+		// model = new _models[modelName](_modelInstance.api, _modelInstance.model, _modelInstance.module, _modelInstance.messenger, _modelInstance.promises);
+
+
+		_model = {};
+
+		_modelInstance = new _models[modelName](_api, _model, _module, _messenger, _promises);
+
+		// Flip model...
+		_internalModel = _model;
+
+		// Replace model properties...
+		Object
+			.keys(_model)
+			.forEach(key => {
+				Object.defineProperty(_model, key, {
+					get: function() {
+		                return _internalModel[key];
+		            },
+		            set: function(value) {
+		                var previousValue = _models[key];
+		                _internalModel[key] = valuevalue;
+		            }
+				});
+			});
+
+		Object.seal(_model);
+
+
+
+		_messenger.model.post("onModelReady", inputs);
+
+		_messenger.model.post("onBeforeDestroy");
+		_messenger.model.post("onViewDestroyed");
+		_messenger.model.post("onViewCreated");
+
+		_messenger.model.post("onModelChanged", {
+            key: key,
+            value: value,
+            previousValue: previousValue
+        });
+
+
+
+
 
 		componentAPI.destroy = function (forceDestroy) {
 			return true || false;
@@ -280,6 +342,8 @@ function Component(_root) {
 	_api.action = _DefineAction;
 	_api.template = _DefineTemplate;
 	_api.util =_DefineUtil;
+
+	_api.create = _CreateComponent;
 
 
 
