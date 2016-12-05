@@ -13,7 +13,7 @@ function Component(_root) {
 		_Module,
 		_Component,
 		_api = {},
-		_models = {},
+		_modelDefinitions = {},
 		_actions = {},
 		_templates = {};
 
@@ -126,25 +126,76 @@ function Component(_root) {
 
 
 
+	// /*
+
+	// */
+	// _DefineModel = function DefineModel(modelName, arg1, arg2) {
+	// 	"use strict";
+
+	// 	var modelKeys, ModelObject;
+
+	// 	// Overloaded method
+	// 	//	(1) DefineModel(modelName, modelKeys, ModelObject)
+	// 	//	(2) DefineModel(modelName, ModelObject)
+	// 	if (Array.isArray(arg1) && typeof arg2 === "function") {
+	// 		modelKeys = arg1;
+	// 		ModelObject = arg2;
+	// 	}
+	// 	else if (typeof arg1 === "function") {
+	// 		ModelObject = arg1;
+	// 	}
+
+	// 	// Verify arguments
+	// 	if (typeof modelName !== "string" || modelName.trim() === "") {
+	// 		throw new SyntaxError(`The model name must be a valid string (usage: component.model(string, [optional array], function).`);
+	// 	}
+
+	// 	if (typeof ModelObject !== "function") {
+	// 		throw new SyntaxError(`The model object must be a valid function (usage: component.model(string, [optional array], function).`);
+	// 	}
+
+	// 	// No check to see if model name currently exists.  If two
+	// 	// models have the same name, then the last one in will be
+	// 	// the current.  This is how variables work, so leaving that
+	// 	// same power to the developer to get right.
+	// 	_models[modelName] = {
+	// 		keys: modelKeys,
+	// 		Obj: ModelObject
+	// 	};
+
+	// 	//
+	// 	return ;
+	// };
+
+
+
 	/*
 
 	*/
-	_DefineModel = function DefineModel(modelName, ModelObject) {
+	_DefineModel = function DefineModel(options) {
 		"use strict";
 
-		if (typeof modelName !== "string" || modelName.trim() === "") {
-			throw new SyntaxError(`The model name must be a valid string (usage: component.model(string, function).`);
+		// Verify arguments
+		if (typeof options !== "object" || options === null) {
+			throw new SyntaxError(`The model must be defined with the following object: component.model({ name: string, main: function, keys: [optional array] }).`);
 		}
 
-		if (typeof ModelObject !== "function") {
-			throw new SyntaxError(`The model object must be a valid function (usage: component.model(string, function).`);
+		if (typeof options.name !== "string" || options.name.trim() === "") {
+			throw new SyntaxError(`The model name must be a valid string (usage: component.model({ name: string, main: function, keys: [optional array] })).`);
+		}
+
+		if (typeof options.main !== "function") {
+			throw new SyntaxError(`The model must have a valid function (usage: component.model({ name: string, main: function, keys: [optional array] })).`);
 		}
 
 		// No check to see if model name currently exists.  If two
 		// models have the same name, then the last one in will be
 		// the current.  This is how variables work, so leaving that
 		// same power to the developer to get right.
-		_models[modelName] = ModelObject;
+		_modelDefinitions[options.name] = {
+			keys: options.keys,
+			main: options.main
+		};
 	};
 
 
@@ -249,41 +300,77 @@ function Component(_root) {
 	/*
 
 	*/
-	_Component = function Component(modelName, inputs) {
+	_CreateComponent = function CreateComponent(modelName, module, inputs) {
 		"use strict";
 
-		var componentAPI,
-			model;
+		// var componentAPI,
+		// 	model;
 
 
-		// _modelInstance = {};
+		// // _modelInstance = {};
 
-		// _modelInstance.api = {};
-
-
-		// Object.defineProperty(_modelInstance, "model", {
-		// 	get: function() {
-  //               return _modelInstance["model"];
-  //           },
-  //           set: function(modelProperty) {
-  //               var oldValue = _models[modelName];
-  //               _models[modelName] = modelProperty;
-  //           }
-		// });
-
-		// model = new _models[modelName](_modelInstance.api, _modelInstance.model, _modelInstance.module, _modelInstance.messenger, _modelInstance.promises);
+		// // _modelInstance.api = {};
 
 
-		_model = {};
+		// // Object.defineProperty(_modelInstance, "model", {
+		// // 	get: function() {
+  // //               return _modelInstance["model"];
+  // //           },
+  // //           set: function(modelProperty) {
+  // //               var oldValue = _models[modelName];
+  // //               _models[modelName] = modelProperty;
+  // //           }
+		// // });
 
-		_modelInstance = new _models[modelName](_api, _model, _module, _messenger, _promises);
+		// // model = new _models[modelName](_modelInstance.api, _modelInstance.model, _modelInstance.module, _modelInstance.messenger, _modelInstance.promises);
 
-		// Flip model...
-		_internalModel = _model;
 
-		// Replace model properties...
-		Object
-			.keys(_model)
+		// _model = {};
+
+		// _modelInstance = new _models[modelName](_api, _model, _module, _messenger, _promises);
+
+		// // Flip model...
+		// _internalModel = _model;
+
+		// // Replace model properties...
+		// Object
+		// 	.keys(_model)
+		// 	.forEach(key => {
+		// 		Object.defineProperty(_model, key, {
+		// 			get: function() {
+		//                 return _internalModel[key];
+		//             },
+		//             set: function(value) {
+		//                 var previousValue = _models[key];
+		//                 _internalModel[key] = valuevalue;
+		//             }
+		// 		});
+		// 	});
+
+		// Object.seal(_model);
+
+
+		var _api = {},
+			_model = {},
+			_internalModel = {},
+			_module,
+			_messenger,
+			_promises = [],
+			_modelInstance;
+
+
+		// Verify
+		if (typeof modelName !== "string" || modelName.trim() === "") {
+			throw new SyntaxError(`A model name is required (usage: component.create(string, module, {})).`);
+		}
+
+		if (typeof module !== "object" || module === null) {
+			throw new SyntaxError(`The component must be a child of a module (usage: component.create(string, module, {})).`);
+		}
+
+
+		_modelDefinitions[modelName]
+			.keys
 			.forEach(key => {
 				Object.defineProperty(_model, key, {
 					get: function() {
@@ -296,8 +383,8 @@ function Component(_root) {
 				});
 			});
 
-		Object.seal(_model);
 
+		_modelInstance = new _models[modelName](_api, _model, _module, _messenger, _promises);
 
 
 		_messenger.model.post("onModelReady", inputs);
